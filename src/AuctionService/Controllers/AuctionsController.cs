@@ -3,6 +3,8 @@ using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +12,7 @@ namespace AuctionService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuctionsController(AuctionDbContext context, IMapper mapper) : ControllerBase
+public class AuctionsController(AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<AuctionDto>>> GetAuctions(string? date)
@@ -44,10 +46,15 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper) : Cont
         var auction = mapper.Map<Auction>(auctionDto);
         // TODO: add current user as seller
         auction.Seller = "test";
+        
         context.Auctions.Add(auction);
         
+        var newAuction = mapper.Map<AuctionDto>(auction);
+        
+        await publishEndpoint.Publish(mapper.Map<AuctionCreated>(newAuction));
+        
         var result = await context.SaveChangesAsync() > 0;
-
+        
         if (!result) return BadRequest("Failed to create auction");
         
         return CreatedAtAction(nameof(GetAuctionById), new { id = auction.Id }, mapper.Map<AuctionDto>(auction));
@@ -58,7 +65,11 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper) : Cont
     {
         var auction = await context.Auctions.Include(x => x.Item)
             .FirstOrDefaultAsync(x => x.Id == id);
-        if (auction == null) return NotFound();
+        
+        if (auction == null)
+        {
+            return NotFound();
+        }
 
         // TODO: check seller == username
         auction.Item.Make = auctionDto.Make ?? auction.Item.Make;
@@ -66,6 +77,8 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper) : Cont
         auction.Item.Year = auctionDto.Year;
         auction.Item.Color = auctionDto.Color ?? auction.Item.Color;
         auction.Item.Mileage = auctionDto.Mileage;
+        
+        await publishEndpoint.Publish(mapper.Map<AuctionUpdated>(auction));
 
         var result = await context.SaveChangesAsync() > 0;
 
@@ -88,7 +101,9 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper) : Cont
 
         // if (auction.Seller != User.Identity?.Name) return Forbid();
         context.Auctions.Remove(auction);
-
+        
+        await publishEndpoint.Publish<AuctionDeleted>(new {Id = auction.Id.ToString()});
+        
         var result = await context.SaveChangesAsync() > 0;
 
         if (!result)
