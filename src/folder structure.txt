@@ -6,3 +6,7 @@ dotnet sln add src/Contracts
 # Reference `..\Contracts\Contracts.csproj` added to the project.
 dotnet add reference ../../src/Contracts
 
+# dockerized image
+docker build -f src/AuctionService/Dockerfile -t testing123 .
+
+
