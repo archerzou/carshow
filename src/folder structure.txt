@@ -1,0 +1,12 @@
+dotnet sln carshow.sln add src/AuctionService/AuctionService.csproj
+
+# Project `src\Contracts\Contracts.csproj` added to the solution.
+dotnet sln add src/Contracts
+
+# Reference `..\Contracts\Contracts.csproj` added to the project.
+dotnet add reference ../../src/Contracts
+
+# dockerized image
+docker build -f src/AuctionService/Dockerfile -t testing123 .
+
+
