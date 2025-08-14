@@ -18,12 +18,12 @@ const UserActions = ({ user }: Props) => {
     const pathname = usePathname();
     const setParams = useParamsStore(state => state.setParams);
 
-    function setWinner() {
+   const setWinner = () => {
         setParams({winner: user.username, seller: undefined});
         if (pathname !== '/') router.push('/');
     }
 
-    function setSeller() {
+    const setSeller = ()=> {
         setParams({seller: user.username, winner: undefined});
         if (pathname !== '/') router.push('/');
     }

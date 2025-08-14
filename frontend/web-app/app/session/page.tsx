@@ -1,6 +1,6 @@
 import { auth } from "@/auth"
 import Heading from "../components/Heading";
-// import AuthTest from "./AuthTest";
+import AuthTest from "./AuthTest";
 
 const Session = async ()=> {
     const session = await auth();
@@ -13,9 +13,9 @@ const Session = async ()=> {
                     {JSON.stringify(session, null, 2)}</pre>
             </div>
 
-            {/*<div className="mt-4">*/}
-            {/*    <AuthTest />*/}
-            {/*</div>*/}
+            <div className="mt-4">
+                <AuthTest />
+            </div>
         </div>
     )
 }

@@ -10,7 +10,7 @@ const Logo = () => {
 
     const reset = useParamsStore(state => state.reset);
 
-    function handleReset() {
+    const handleReset = ()=> {
         if (pathname !== '/') router.push('/');
         reset();
     }
