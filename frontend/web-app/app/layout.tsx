@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import React from "react";
 import NarBar from "@/app/nav/NarBar";
+import {SessionProvider} from "next-auth/react";
 
 
 export const metadata: Metadata = {
@@ -16,11 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <NarBar />
-        <main className="container mx-auto px-5 pt-10">
-            {children}
-        </main>
+      <body suppressHydrationWarning={true}>
+        <SessionProvider>
+          <NarBar />
+          <main className="container mx-auto px-5 pt-10">
+              {children}
+          </main>
+        </SessionProvider>
       </body>
     </html>
   );
