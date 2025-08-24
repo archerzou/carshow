@@ -2,6 +2,8 @@
 
 import {PagedResult, Auction} from "@/types";
 import {auth} from "@/auth";
+import { FieldValues } from "react-hook-form";
+import { fetchWrapper } from "@/lib/fetchWrapper";
 
 
 export async function getData(query: string): Promise<PagedResult<Auction>> {
@@ -32,4 +34,12 @@ export async function updateAuctionTest(): Promise<{status: number, message: str
     if (!res.ok) return {status: res.status, message: res.statusText};
 
     return {status: res.status, message: res.statusText};
+}
+
+export async function createAuction(data: FieldValues) {
+    return fetchWrapper.post('auctions', data);
+}
+
+export async function updateAuction(data: FieldValues, id: string) {
+    return fetchWrapper.put(`auctions/${id}`, data);
 }
