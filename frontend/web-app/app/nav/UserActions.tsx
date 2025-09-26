@@ -40,7 +40,6 @@ const UserActions = ({ user }: Props) => {
                 <Link href='/auctions/create'>
                     Sell my car
                 </Link>
-
             </DropdownItem>
             <DropdownItem icon={HiCog}>
                 <Link href='/session'>
