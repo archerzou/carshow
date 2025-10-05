@@ -1,5 +1,6 @@
 using AuctionService.Consumers;
 using AuctionService.Data;
+using AuctionService.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters.NameClaimType = "username";
     });
 
+builder.Services.AddGrpc();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -61,6 +63,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGrpcService<GrpcAuctionService>();
 
 try
 {
@@ -68,7 +71,9 @@ try
 }
 catch (Exception e)
 {
-    Console.WriteLine(e);
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(e, "An error occurred during database initialization");
+    throw; // Re-throw to prevent app from starting with broken DB
 }
 
 app.Run();

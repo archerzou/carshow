@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BiddingService.DTOs;
 using BiddingService.Models;
+using BiddingService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Entities;
@@ -11,7 +12,8 @@ namespace BiddingService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BidsController(IMapper mapper, IPublishEndpoint publishEndpoint): ControllerBase
+public class BidsController(IMapper mapper, IPublishEndpoint publishEndpoint,
+    GrpcAuctionClient grpcClient): ControllerBase
 {
     [Authorize]
     [HttpPost]
@@ -21,7 +23,12 @@ public class BidsController(IMapper mapper, IPublishEndpoint publishEndpoint): C
 
         if (auction == null)
         {
-            return NotFound();
+            auction = grpcClient.GetAuction(auctionId);
+
+            if (auction == null)
+            {
+                return BadRequest("Cannot accept bids for this auction");
+            }
         }
 
         if (auction.Seller == User.Identity?.Name)
