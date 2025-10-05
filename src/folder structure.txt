@@ -9,4 +9,9 @@ dotnet add reference ../../src/Contracts
 # dockerized image
 docker build -f src/AuctionService/Dockerfile -t testing123 .
 
+# create a new webapi
+dotnet new webapi -o src/BiddingService -controllers
+dotnet sln add src/BiddingService
+
+
 
