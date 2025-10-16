@@ -13,5 +13,6 @@ docker build -f src/AuctionService/Dockerfile -t testing123 .
 dotnet new webapi -o src/BiddingService -controllers
 dotnet sln add src/BiddingService
 
-
-
+# create a new service
+dotnet new web -o src/NotificationService
+dotnet sln add src/NotificationService
