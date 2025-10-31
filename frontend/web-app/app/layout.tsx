@@ -3,6 +3,7 @@ import "./globals.css";
 import NarBar from "@/app/nav/NarBar";
 import {SessionProvider} from "next-auth/react";
 import ToasterProvider from "@/app/providers/ToasterProvider";
+import SignalRProvider from "@/app/providers/SignalRProvider";
 
 
 export const metadata: Metadata = {
@@ -22,7 +23,9 @@ export default function RootLayout({
           <ToasterProvider />
           <NarBar />
           <main className="container mx-auto px-5 pt-10">
+            <SignalRProvider>
               {children}
+            </SignalRProvider>
           </main>
         </SessionProvider>
       </body>
