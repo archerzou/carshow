@@ -6,6 +6,7 @@ import EditButton from "@/app/auctions/EditButton";
 import DeleteButton from "@/app/auctions/DeleteButton";
 import CarImage from "@/app/auctions/CarImage";
 import DetailedSpecs from "@/app/auctions/DetailedSpecs";
+import BidList from "@/app/auctions/details/[id]/BidList";
 
 const Details = async ({ params}: {params: Promise<{id: string}>}) => {
     const { id } = await params;
@@ -37,7 +38,7 @@ const Details = async ({ params}: {params: Promise<{id: string}>}) => {
                     rounded-lg overflow-hidden">
                     <CarImage imageUrl={data.imageUrl} />
                 </div>
-                {/*<BidList user={user} auction={data} />*/}
+                <BidList user={user} auction={data} />
             </div>
 
             <div className="mt-3 grid grid-cols-1 rounded-lg">
